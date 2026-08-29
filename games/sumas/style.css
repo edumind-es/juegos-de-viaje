@@ -1,0 +1,122 @@
+/* Juego: Sumas y restas */
+
+.sumas__visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  flex: 0 0 auto;
+  max-width: 100%;
+}
+
+.sumas__grupo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  max-width: 46vw;
+  padding: var(--sp-2);
+  border-radius: var(--r-md);
+  background: rgba(255, 253, 249, 0.7);
+  box-shadow: inset 0 0 0 2px var(--crema-2);
+}
+
+.sumas__ficha {
+  width: clamp(38px, 8vmin, 72px);
+  height: clamp(38px, 8vmin, 72px);
+  animation: ficha-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes ficha-in {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
+.sumas__ficha--fuera {
+  opacity: 0.28;
+  filter: grayscale(1);
+  position: relative;
+}
+.sumas__ficha--fuera::after {
+  content: '';
+  position: absolute;
+  inset: 40% 0 auto 0;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--terracota);
+}
+
+.sumas__mas {
+  font-family: var(--serif);
+  font-size: var(--t-xl);
+  color: var(--tinta-suave);
+}
+
+.sumas__pizarra {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--r-lg);
+  background: var(--papel);
+  box-shadow: var(--sombra-1), var(--sombra-2);
+  flex: 0 0 auto;
+}
+
+.sumas__num {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: clamp(2rem, 7vmin, 3.6rem);
+  font-variant-numeric: tabular-nums;
+}
+
+.sumas__num--hueco {
+  color: var(--terracota);
+  min-width: 1.4em;
+  text-align: center;
+  border-bottom: 5px solid var(--crema-3);
+}
+
+.sumas__signo {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 5vmin, 2.6rem);
+  color: var(--tinta-suave);
+}
+
+.sumas__opciones {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-2);
+  width: min(100%, 680px);
+  flex: 0 0 auto;
+}
+
+.sumas__opcion {
+  min-height: clamp(64px, 12vmin, 100px);
+  border-radius: var(--r-lg);
+  background: var(--papel);
+  box-shadow: var(--sombra-1), var(--sombra-2);
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: clamp(1.5rem, 5vmin, 2.4rem);
+  font-variant-numeric: tabular-nums;
+  transition: transform 140ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.sumas__opcion:active {
+  transform: scale(0.93);
+}
+.sumas__opcion--descartada {
+  opacity: 0.35;
+  box-shadow: none;
+}
+
+@media (orientation: portrait) {
+  .sumas__opciones {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .sumas__grupo {
+    max-width: 90vw;
+  }
+}

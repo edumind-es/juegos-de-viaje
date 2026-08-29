@@ -1,0 +1,391 @@
+/* ============================================================
+   Pantallas del marco: perfiles, hub de juegos y progreso
+   ============================================================ */
+
+/* -------------------------------------------------- selección de perfil */
+
+.perfiles {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-4);
+  overflow-y: auto;
+  padding: var(--sp-3) 0;
+}
+
+.perfiles__cabecera {
+  text-align: center;
+}
+.perfiles__cabecera h1 {
+  font-size: clamp(2rem, 5.5vmin, 3.2rem);
+  color: var(--teal-osc);
+}
+.perfiles__cabecera p {
+  margin-top: var(--sp-1);
+  color: var(--tinta-suave);
+  font-size: var(--t-md);
+}
+
+.perfiles__lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+  justify-content: center;
+  align-items: stretch;
+}
+
+.tarjeta-perfil {
+  width: min(38vw, 260px);
+  min-width: 190px;
+  padding: var(--sp-3) var(--sp-3) var(--sp-4);
+  border-radius: var(--r-lg);
+  background: var(--papel);
+  box-shadow: var(--sombra-1), var(--sombra-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 180ms ease;
+}
+.tarjeta-perfil:active {
+  transform: translateY(3px) scale(0.96);
+  box-shadow: var(--sombra-1);
+}
+
+.tarjeta-perfil__avatar {
+  width: min(30vw, 168px);
+  height: min(30vw, 168px);
+}
+.tarjeta-perfil__nombre {
+  font-family: var(--serif);
+  font-size: var(--t-lg);
+  font-weight: 700;
+}
+.tarjeta-perfil__edad {
+  color: var(--tinta-suave);
+  font-size: var(--t-sm);
+  font-weight: 600;
+}
+
+.perfiles__pie {
+  display: flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* editor de perfil */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  text-align: left;
+  margin-bottom: var(--sp-3);
+}
+.campo label {
+  font-weight: 700;
+  font-size: var(--t-sm);
+  color: var(--tinta-suave);
+}
+.campo input[type='text'],
+.campo input[type='number'] {
+  min-height: var(--toque);
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-md);
+  border: 2px solid var(--crema-3);
+  background: var(--crema);
+  font-size: var(--t-md);
+  font-weight: 600;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.selector-color {
+  display: flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+.selector-color button {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--r-full);
+  box-shadow: var(--sombra-1);
+  transition: transform 140ms ease;
+}
+.selector-color button[aria-pressed='true'] {
+  transform: scale(1.14);
+  box-shadow: 0 0 0 4px var(--papel), 0 0 0 7px var(--tinta);
+}
+
+/* ------------------------------------------- preparación para el viaje */
+
+.viaje {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  max-width: min(560px, 92vw);
+  margin: 0 auto;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-lg);
+  background: rgba(255, 253, 249, 0.8);
+  box-shadow: inset 0 0 0 2px var(--crema-2);
+  text-align: center;
+}
+
+.viaje__texto {
+  font-size: var(--t-sm);
+  font-weight: 600;
+  color: var(--tinta-suave);
+  line-height: 1.35;
+}
+
+.viaje[data-estado='si'] {
+  box-shadow: inset 0 0 0 2px var(--acierto);
+}
+.viaje[data-estado='si'] .viaje__texto {
+  color: var(--acierto);
+}
+.viaje[data-estado='pendiente'],
+.viaje[data-estado='no'] {
+  box-shadow: inset 0 0 0 2px var(--mostaza);
+}
+
+.viaje__barra {
+  width: 100%;
+  height: 12px;
+  border-radius: var(--r-full);
+  background: var(--crema-2);
+  overflow: hidden;
+}
+.viaje__barra i {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: var(--r-full);
+  background: var(--teal);
+  transition: width 240ms ease;
+}
+
+/* ------------------------------------------------------------------- hub */
+
+.hub__barra {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex: 0 0 auto;
+  padding-bottom: var(--sp-3);
+}
+
+.hub__perfil {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--toque);
+  padding: 4px var(--sp-3) 4px 4px;
+  border-radius: var(--r-full);
+  background: var(--papel);
+  box-shadow: var(--sombra-1), var(--sombra-2);
+  transition: transform 140ms ease;
+}
+.hub__perfil:active {
+  transform: scale(0.96);
+}
+.hub__perfil svg {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+}
+.hub__perfil-nombre {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: var(--t-md);
+  max-width: 22vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hub__stats {
+  display: flex;
+  gap: var(--sp-2);
+  margin-left: auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.hub__saludo {
+  flex: 0 0 auto;
+  margin-bottom: var(--sp-3);
+}
+.hub__saludo h1 {
+  font-size: clamp(1.6rem, 4.4vmin, 2.6rem);
+  color: var(--teal-osc);
+}
+.hub__saludo p {
+  color: var(--tinta-suave);
+  font-size: var(--t-sm);
+  margin-top: 2px;
+}
+
+.hub__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--sp-3);
+  padding-bottom: var(--sp-4);
+}
+
+.tarjeta-juego {
+  position: relative;
+  border-radius: var(--r-lg);
+  padding: var(--sp-3);
+  min-height: 190px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  text-align: left;
+  color: var(--tinta);
+  background: var(--papel);
+  box-shadow: var(--sombra-1), var(--sombra-2);
+  overflow: hidden;
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 200ms ease;
+  animation: tarjeta-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes tarjeta-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+}
+.tarjeta-juego:active {
+  transform: translateY(4px) scale(0.955);
+  box-shadow: var(--sombra-1);
+}
+
+.tarjeta-juego__arte {
+  width: 100%;
+  height: 108px;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+.tarjeta-juego__arte svg {
+  width: 100%;
+  height: 100%;
+}
+.tarjeta-juego__nombre {
+  font-family: var(--serif);
+  font-size: var(--t-md);
+  font-weight: 700;
+  line-height: 1.15;
+}
+.tarjeta-juego__estrellas {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--t-xs);
+  font-weight: 700;
+  color: var(--tinta-suave);
+}
+.tarjeta-juego__estrellas svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* --------------------------------------------------------- mi progreso */
+
+.progreso__resumen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  align-items: center;
+  padding: var(--sp-3);
+  border-radius: var(--r-lg);
+  background: var(--papel);
+  box-shadow: var(--sombra-1), var(--sombra-2);
+  margin-bottom: var(--sp-3);
+}
+.progreso__resumen svg.avatar {
+  width: 92px;
+  height: 92px;
+  flex: 0 0 auto;
+}
+.progreso__cifras {
+  display: flex;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+.cifra {
+  text-align: center;
+}
+.cifra b {
+  display: block;
+  font-family: var(--serif);
+  font-size: var(--t-xl);
+  color: var(--terracota);
+  line-height: 1;
+}
+.cifra span {
+  font-size: var(--t-xs);
+  color: var(--tinta-suave);
+  font-weight: 600;
+}
+
+.medallas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--sp-2);
+  padding-bottom: var(--sp-4);
+}
+.medalla {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: var(--sp-2);
+  border-radius: var(--r-md);
+  background: var(--papel);
+  box-shadow: var(--sombra-1);
+  text-align: center;
+}
+.medalla svg {
+  width: 66px;
+  height: 66px;
+}
+.medalla b {
+  font-size: var(--t-xs);
+  font-weight: 700;
+}
+.medalla small {
+  font-size: 0.75rem;
+  color: var(--tinta-suave);
+  line-height: 1.25;
+}
+.medalla--bloqueada {
+  opacity: 0.42;
+  filter: grayscale(1);
+}
+
+/* -------------------------------------------------- orientación estrecha */
+
+@media (max-width: 560px) {
+  .hub__grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+  .tarjeta-juego {
+    min-height: 160px;
+  }
+  .tarjeta-juego__arte {
+    height: 80px;
+  }
+}
+
+/* pantallas anchas: el hub respira más */
+@media (min-width: 1100px) {
+  .hub__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

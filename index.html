@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <title>Juegos de viaje · EDUmind</title>
+    <meta name="description" content="Juegos educativos sin conexión para el viaje. Funciona 100% offline." />
+
+    <!-- PWA -->
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#fdf6ec" />
+    <meta name="color-scheme" content="light" />
+
+    <!-- iOS / iPadOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Juegos de viaje" />
+    <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon-180.png" />
+    <link rel="icon" href="./assets/icons/favicon-32.png" sizes="32x32" />
+    <link rel="icon" href="./assets/icons/icon-192.png" sizes="192x192" />
+
+    <link rel="stylesheet" href="./assets/css/base.css" />
+    <link rel="stylesheet" href="./assets/css/hub.css" />
+  </head>
+  <body>
+    <main id="app" role="main">
+      <section class="pantalla">
+        <div class="area-juego">
+          <h1 style="font-family: var(--serif); color: var(--teal-osc)">Juegos de viaje</h1>
+          <p style="color: var(--tinta-suave)">Cargando…</p>
+        </div>
+      </section>
+    </main>
+
+    <noscript>
+      <p style="padding: 24px; font-family: sans-serif">
+        Esta aplicación necesita JavaScript activado para funcionar.
+      </p>
+    </noscript>
+
+    <script type="module" src="./boot.js"></script>
+  </body>
+</html>

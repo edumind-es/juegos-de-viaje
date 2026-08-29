@@ -1,0 +1,574 @@
+/* ============================================================
+   EDUmind Travel Games — sistema de diseño base
+   Paleta cálida editorial. Sin dark mode por decisión de diseño.
+   ============================================================ */
+
+@import url('../fonts/fonts.css');
+
+:root {
+  /* --- Color --- */
+  --crema: #fdf6ec;
+  --crema-2: #f7ead8;
+  --crema-3: #f0dcc4;
+  --papel: #fffdf9;
+  --tinta: #3a342f;
+  --tinta-suave: #6d635a;
+
+  --terracota: #d9634a;
+  --terracota-osc: #b64c36;
+  --teal: #2e7d74;
+  --teal-osc: #23615a;
+  --mostaza: #e9b23c;
+  --mostaza-osc: #c9932a;
+  --azul: #6fa8c7;
+  --azul-osc: #4d87a7;
+  --lila: #9b8bc4;
+  --verde: #7fa650;
+  --rosa: #e79a94;
+
+  --acierto: #4a9a5e;
+  --fallo: #c9764f;
+
+  /* --- Tipografía --- */
+  --serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --sans: 'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --t-xs: 0.85rem;
+  --t-sm: 1rem;
+  --t-md: 1.2rem;
+  --t-lg: 1.6rem;
+  --t-xl: 2.2rem;
+  --t-xxl: 3rem;
+
+  /* --- Espacio y forma --- */
+  --sp-1: 6px;
+  --sp-2: 12px;
+  --sp-3: 18px;
+  --sp-4: 26px;
+  --sp-5: 40px;
+
+  --r-sm: 12px;
+  --r-md: 20px;
+  --r-lg: 30px;
+  --r-full: 999px;
+
+  --toque: 56px; /* objetivo táctil mínimo, por encima de los 48px */
+
+  --sombra-1: 0 2px 0 rgba(58, 52, 47, 0.09);
+  --sombra-2: 0 6px 18px rgba(58, 52, 47, 0.1);
+  --sombra-3: 0 14px 34px rgba(58, 52, 47, 0.14);
+
+  --transicion: 220ms cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* insets de pantalla (notch iOS) */
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-l: env(safe-area-inset-left, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+}
+
+/* ------------------------------------------------------------------ reset */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  overscroll-behavior: none;
+}
+
+body {
+  font-family: var(--sans);
+  font-size: var(--t-md);
+  color: var(--tinta);
+  background: var(--crema);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  overflow: hidden;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  border: 0;
+  background: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--serif);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+/* textura de papel muy sutil, sin imágenes externas */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(233, 178, 60, 0.11), transparent 42%),
+    radial-gradient(circle at 88% 8%, rgba(111, 168, 199, 0.13), transparent 40%),
+    radial-gradient(circle at 76% 92%, rgba(217, 99, 74, 0.09), transparent 45%);
+}
+
+/* ---------------------------------------------------------------- pantalla */
+
+#app {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.pantalla {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--safe-t) + var(--sp-2)) calc(var(--safe-r) + var(--sp-3))
+    calc(var(--safe-b) + var(--sp-2)) calc(var(--safe-l) + var(--sp-3));
+  animation: entrar var(--transicion) both;
+}
+
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+}
+
+/* la pantalla que se va deja de ocupar sitio para que la nueva no dé un salto */
+.pantalla--saliendo {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: salir 160ms ease-in both;
+}
+
+@keyframes salir {
+  to {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.99);
+  }
+}
+
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* ----------------------------------------------------------------- botones */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1);
+  min-height: var(--toque);
+  min-width: var(--toque);
+  padding: 0 var(--sp-4);
+  border-radius: var(--r-full);
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: var(--t-md);
+  letter-spacing: -0.01em;
+  background: var(--papel);
+  color: var(--tinta);
+  box-shadow: var(--sombra-1), var(--sombra-2);
+  transition: transform 120ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 120ms ease,
+    background-color 120ms ease;
+}
+
+.btn:active {
+  transform: translateY(2px) scale(0.97);
+  box-shadow: 0 1px 0 rgba(58, 52, 47, 0.09);
+}
+
+.btn--principal {
+  background: var(--terracota);
+  color: #fff;
+}
+.btn--teal {
+  background: var(--teal);
+  color: #fff;
+}
+.btn--mostaza {
+  background: var(--mostaza);
+  color: var(--tinta);
+}
+.btn--fantasma {
+  background: rgba(255, 253, 249, 0.75);
+  box-shadow: inset 0 0 0 2px var(--crema-3);
+}
+.btn--grande {
+  min-height: 72px;
+  font-size: var(--t-lg);
+  padding: 0 var(--sp-5);
+}
+
+/* botón circular de icono (pausa, sonido, atrás) */
+.btn-icono {
+  width: var(--toque);
+  height: var(--toque);
+  border-radius: var(--r-full);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--papel);
+  box-shadow: var(--sombra-1), var(--sombra-2);
+  transition: transform 120ms ease;
+  flex: 0 0 auto;
+}
+.btn-icono:active {
+  transform: scale(0.9);
+}
+.btn-icono svg {
+  width: 28px;
+  height: 28px;
+}
+
+/* estados de foco visibles para teclado, sin depender de hover */
+:focus-visible {
+  outline: 3px solid var(--azul-osc);
+  outline-offset: 3px;
+}
+
+/* --------------------------------------------------------------- tarjetas */
+
+.tarjeta {
+  background: var(--papel);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sombra-1), var(--sombra-2);
+}
+
+/* -------------------------------------------------------- barra de juego */
+
+.barra-juego {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding-bottom: var(--sp-2);
+  flex: 0 0 auto;
+}
+
+.barra-juego__titulo {
+  font-family: var(--serif);
+  font-size: var(--t-lg);
+  font-weight: 700;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.marcador {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 44px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-full);
+  background: var(--papel);
+  box-shadow: var(--sombra-1);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------- instrucción de cada juego */
+
+.instruccion {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  margin-bottom: var(--sp-2);
+  border-radius: var(--r-md);
+  background: rgba(255, 253, 249, 0.8);
+  box-shadow: inset 0 0 0 2px var(--crema-2);
+  font-weight: 600;
+  font-size: var(--t-md);
+  flex: 0 0 auto;
+}
+.instruccion__icono {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+}
+.instruccion__texto {
+  flex: 1;
+  min-width: 0;
+}
+
+/* --------------------------------------------------------- área de juego */
+
+.area-juego {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  position: relative;
+}
+
+/* ------------------------------------------------- feedback acierto/fallo */
+
+@keyframes pulso-ok {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes meneo {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-7px);
+  }
+  75% {
+    transform: translateX(7px);
+  }
+}
+
+.es-acierto {
+  animation: pulso-ok 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 0 0 5px var(--acierto) !important;
+}
+.es-fallo {
+  animation: meneo 340ms ease;
+  box-shadow: 0 0 0 5px var(--fallo) !important;
+}
+
+/* sello grande de feedback en el centro de la pantalla */
+.sello {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  z-index: 60;
+}
+.sello svg {
+  width: 42vmin;
+  height: 42vmin;
+  animation: sello-in 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes sello-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotate(-12deg);
+  }
+  55% {
+    opacity: 1;
+    transform: scale(1.04) rotate(2deg);
+  }
+  80% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+}
+
+/* ------------------------------------------------------------- modales */
+
+.velo {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: var(--sp-3);
+  background: rgba(58, 52, 47, 0.42);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  animation: velo-in 200ms ease both;
+}
+@keyframes velo-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.dialogo {
+  width: min(560px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  background: var(--papel);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sombra-3);
+  padding: var(--sp-4);
+  text-align: center;
+  animation: dialogo-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes dialogo-in {
+  from {
+    opacity: 0;
+    transform: translateY(26px) scale(0.94);
+  }
+}
+
+.dialogo h2 {
+  font-size: var(--t-xl);
+  margin-bottom: var(--sp-2);
+}
+.dialogo p {
+  color: var(--tinta-suave);
+  margin-bottom: var(--sp-3);
+}
+.dialogo__botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  justify-content: center;
+}
+
+/* ------------------------------------------------------- estrellas ganadas */
+
+.estrellas-premio {
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-2);
+  margin: var(--sp-3) 0;
+}
+.estrellas-premio svg {
+  width: 68px;
+  height: 68px;
+}
+.estrellas-premio .estrella-on {
+  animation: estrella-pop 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.estrellas-premio .estrella-on:nth-child(2) {
+  animation-delay: 160ms;
+}
+.estrellas-premio .estrella-on:nth-child(3) {
+  animation-delay: 320ms;
+}
+@keyframes estrella-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.2) rotate(-40deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.18) rotate(6deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+/* ------------------------------------------------------------- confeti */
+
+#confeti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 90;
+}
+
+/* -------------------------------------------- lectura para las peques
+
+   Con el perfil de 5 años, todo el texto que la niña necesita LEER se muestra
+   en mayúsculas (a esa edad aún no domina las minúsculas). Los números y las
+   cifras no se ven afectados por text-transform.
+   Los juegos marcan sus propias etiquetas legibles con la clase .leible.
+   ------------------------------------------------------------------------ */
+
+:root[data-lectura='mayus'] .btn,
+:root[data-lectura='mayus'] .instruccion__texto,
+:root[data-lectura='mayus'] .barra-juego__titulo,
+:root[data-lectura='mayus'] .tarjeta-juego__nombre,
+:root[data-lectura='mayus'] .tarjeta-perfil__nombre,
+:root[data-lectura='mayus'] .tarjeta-perfil__edad,
+:root[data-lectura='mayus'] .hub__perfil-nombre,
+:root[data-lectura='mayus'] .hub__saludo h1,
+:root[data-lectura='mayus'] .hub__saludo p,
+:root[data-lectura='mayus'] .dialogo h2,
+:root[data-lectura='mayus'] .dialogo p,
+:root[data-lectura='mayus'] .medalla b,
+:root[data-lectura='mayus'] .medalla small,
+:root[data-lectura='mayus'] .cifra span,
+:root[data-lectura='mayus'] .marcador,
+:root[data-lectura='mayus'] .leible {
+  text-transform: uppercase;
+  letter-spacing: 0.015em;
+}
+
+/* en mayúsculas el texto ocupa más: se compensa con un pelín menos de cuerpo */
+:root[data-lectura='mayus'] .instruccion__texto,
+:root[data-lectura='mayus'] .tarjeta-juego__nombre {
+  font-size: 0.96em;
+  line-height: 1.2;
+}
+
+/* --------------------------------------------------------- utilidades */
+
+.oculto {
+  display: none !important;
+}
+.centrado {
+  text-align: center;
+}
+.solo-lectores {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

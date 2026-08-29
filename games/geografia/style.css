@@ -1,0 +1,281 @@
+/* Juego: Geografía */
+
+/* ------------------------------------------------------- menú de modos */
+
+.geo__modos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--sp-2);
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding: 2px;
+  align-content: start; /* el menú empieza arriba, no flotando en el centro */
+}
+
+.geo__modo {
+  --color: var(--teal);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 122px;
+  padding: var(--sp-2);
+  border-radius: var(--r-lg);
+  background: var(--papel);
+  box-shadow: var(--sombra-1), var(--sombra-2);
+  transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1);
+  animation: geo-modo-in 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes geo-modo-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.95);
+  }
+}
+.geo__modo:active {
+  transform: scale(0.94);
+}
+
+.geo__modo-icono {
+  width: 54px;
+  height: 54px;
+  display: block;
+}
+.geo__modo-icono svg {
+  width: 100%;
+  height: 100%;
+}
+
+.geo__modo-nombre {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 0.98rem;
+  line-height: 1.12;
+  text-align: center;
+}
+
+.geo__cargando {
+  font-family: var(--serif);
+  font-size: var(--t-lg);
+  color: var(--tinta-suave);
+}
+
+/* ------------------------------------------------------ reto de mapa */
+
+.geo__mapa-caja {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.geo__mapa {
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: manipulation;
+}
+
+.geo__mar {
+  fill: #cfe3ec;
+}
+
+.geo__tierra {
+  fill: #e8dcc6;
+  stroke: #fffdf9;
+  stroke-width: 0.6;
+  stroke-linejoin: round;
+}
+
+/* las zonas que se pueden tocar destacan sobre el resto del mapa */
+.geo__tierra.geo__tocable {
+  fill: #bcd39a;
+  cursor: pointer;
+}
+
+.geo__agua {
+  fill: rgba(111, 168, 199, 0.001); /* invisible pero tocable */
+  stroke: rgba(45, 108, 140, 0.35);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 5;
+  cursor: pointer;
+}
+
+.geo__rio {
+  fill: none;
+  stroke: #2b6fa8;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+.geo__rio-toque {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 26; /* franja ancha invisible: un río fino sería intocable con el dedo */
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  cursor: pointer;
+}
+
+.geo__marca {
+  fill: #8a5a34;
+  stroke: #fffdf9;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  cursor: pointer;
+}
+
+.geo__caja {
+  fill: none;
+  stroke: rgba(58, 52, 47, 0.5);
+  stroke-width: 2;
+  stroke-dasharray: 7 5;
+}
+
+/* ---- respuestas ---- */
+
+.geo__ok {
+  fill: #4a9a5e !important;
+  stroke: #fffdf9;
+  stroke-width: 1.6;
+  animation: geo-late 620ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.geo__mal {
+  fill: #c9764f !important;
+  stroke: #fffdf9;
+  animation: geo-tiembla 380ms ease;
+}
+.geo__solucion {
+  fill: #4a9a5e !important;
+  stroke: #fffdf9;
+  stroke-width: 1.6;
+  animation: geo-parpadea 900ms ease infinite;
+}
+/* en ríos y mares el acierto se ve en el trazo, no en el relleno */
+.geo__rio-toque.geo__ok,
+.geo__rio-toque.geo__solucion {
+  fill: none !important;
+  stroke: #4a9a5e;
+  stroke-width: 7;
+}
+.geo__rio-toque.geo__mal {
+  fill: none !important;
+  stroke: #c9764f;
+  stroke-width: 7;
+}
+.geo__agua.geo__ok,
+.geo__agua.geo__solucion {
+  fill: rgba(74, 154, 94, 0.45) !important;
+  stroke: #4a9a5e;
+  stroke-dasharray: none;
+}
+.geo__agua.geo__mal {
+  fill: rgba(201, 118, 79, 0.4) !important;
+  stroke: #c9764f;
+}
+
+@keyframes geo-late {
+  45% {
+    transform: scale(1.02);
+  }
+}
+@keyframes geo-tiembla {
+  25% {
+    transform: translateX(-3px);
+  }
+  75% {
+    transform: translateX(3px);
+  }
+}
+@keyframes geo-parpadea {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* --------------------------------------------------- reto de opciones */
+
+.geo__opciones-caja {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+  width: 100%;
+  max-width: 720px;
+}
+
+.geo__pista {
+  width: clamp(180px, 34vmin, 320px);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  box-shadow: var(--sombra-1), var(--sombra-2);
+  animation: geo-pista-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes geo-pista-in {
+  from {
+    opacity: 0;
+    transform: scale(0.85) rotate(-3deg);
+  }
+}
+.geo__pista svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* cuando hay mapa, la bandera va flotando en una esquina */
+.geo__pista--flotante {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  width: clamp(96px, 16vmin, 150px);
+}
+
+.geo__opciones {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sp-2);
+  width: 100%;
+}
+
+.geo__opcion {
+  min-height: 68px;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-lg);
+  background: var(--papel);
+  box-shadow: var(--sombra-1), var(--sombra-2);
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: clamp(1rem, 2.6vmin, 1.35rem);
+  line-height: 1.15;
+  transition: transform 140ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.geo__opcion:active {
+  transform: scale(0.95);
+}
+.geo__opcion.geo__ok {
+  background: #4a9a5e;
+  color: #fff;
+}
+.geo__opcion.geo__mal {
+  background: #c9764f;
+  color: #fff;
+}
+.geo__opcion.geo__solucion {
+  box-shadow: 0 0 0 4px #4a9a5e;
+}
+
+@media (max-width: 620px) {
+  .geo__opciones {
+    grid-template-columns: 1fr;
+  }
+  .geo__modos {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}

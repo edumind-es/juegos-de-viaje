@@ -1,0 +1,141 @@
+/* Juego: Check-in de viaje */
+
+.checkin__scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding: 2px;
+}
+
+.checkin__tablero {
+  display: grid;
+  grid-template-columns: repeat(var(--columnas, 4), minmax(56px, 1fr));
+  gap: clamp(5px, 0.9vmin, 12px);
+  width: 100%;
+  min-width: min-content;
+}
+
+.checkin__celda {
+  position: relative;
+  min-height: 56px;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: var(--r-md);
+  background: var(--papel);
+  box-shadow: var(--sombra-1);
+  overflow: hidden;
+  transition: transform 140ms cubic-bezier(0.22, 1, 0.36, 1), background-color 200ms ease;
+}
+.checkin__celda:active {
+  transform: scale(0.93);
+}
+
+.checkin__icono {
+  width: 62%;
+  height: 62%;
+  display: block;
+  transition: opacity 200ms ease;
+}
+.checkin__icono svg {
+  width: 100%;
+  height: 100%;
+}
+
+.checkin__etiqueta {
+  font-size: clamp(0.5rem, 1.15vmin, 0.82rem);
+  font-weight: 600;
+  line-height: 1.05;
+  text-align: center;
+  color: var(--tinta-suave);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.checkin__tick {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(46, 125, 116, 0.9);
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 200ms ease, transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.checkin__tick svg {
+  width: 54%;
+  height: 54%;
+}
+
+.checkin__celda--vista .checkin__tick {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.checkin__celda--nueva {
+  animation: visto 480ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes visto {
+  45% {
+    transform: scale(1.16) rotate(-3deg);
+  }
+}
+
+.checkin__celda--linea .checkin__tick {
+  background: rgba(233, 178, 60, 0.95);
+}
+.checkin__celda--linea {
+  animation: linea 900ms ease;
+}
+@keyframes linea {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.14);
+  }
+  60% {
+    transform: scale(0.97);
+  }
+}
+
+.checkin__acciones {
+  display: flex;
+  gap: var(--sp-2);
+  justify-content: center;
+  flex-wrap: wrap;
+  flex: 0 0 auto;
+  padding-top: var(--sp-2);
+}
+
+/* nivel 1: celdas grandes con nombre bien legible */
+.checkin__tablero[data-nivel='1'] .checkin__celda {
+  min-height: 96px;
+  border-radius: var(--r-lg);
+  box-shadow: var(--sombra-1), var(--sombra-2);
+}
+.checkin__tablero[data-nivel='1'] .checkin__etiqueta {
+  font-size: clamp(0.75rem, 2vmin, 1.05rem);
+  color: var(--tinta);
+}
+
+/* nivel 2: el tablero de 10x10 puede desplazarse si la pantalla es estrecha */
+.checkin__tablero[data-nivel='2'] {
+  min-width: 620px;
+}
+
+@media (max-width: 700px) {
+  .checkin__tablero[data-nivel='1'] {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

@@ -1,0 +1,239 @@
+/* Juego: Colorear libre */
+
+.colorear__disposicion {
+  display: flex;
+  gap: var(--sp-3);
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  align-items: stretch;
+}
+
+/* el lienzo es cuadrado y se ajusta a lo que dé de sí la pantalla */
+.colorear__lienzo {
+  position: relative;
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+  margin: auto;
+  border-radius: var(--r-lg);
+  background: var(--papel);
+  box-shadow: var(--sombra-1), var(--sombra-2);
+  overflow: hidden;
+  touch-action: none;
+}
+
+.colorear__svg,
+.colorear__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.colorear__canvas {
+  pointer-events: none;
+}
+.colorear__canvas--activo {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+.colorear__dibujo {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.colorear__region {
+  fill: #fffdf9;
+  stroke: #3a342f;
+  stroke-width: 2.2;
+  stroke-linejoin: round;
+  cursor: pointer;
+  transition: fill 180ms ease;
+}
+
+.colorear__region--pintada {
+  animation: salpicar 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes salpicar {
+  40% {
+    transform: scale(1.03);
+  }
+}
+
+.colorear__detalles {
+  pointer-events: none;
+}
+
+/* los mandalas tienen piezas pequeñas: trazo más fino para que respiren */
+.colorear__dibujo--mandala .colorear__region {
+  stroke-width: 1.3;
+}
+
+/* ------------------------------------------------------------- galería */
+
+.dialogo--ancho {
+  width: min(880px, 100%);
+}
+
+.colorear__galeria {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+  max-height: 58vh;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.colorear__miniatura {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  border-radius: var(--r-md);
+  background: var(--crema);
+  box-shadow: inset 0 0 0 2px var(--crema-3);
+  transition: transform 140ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.colorear__miniatura:active {
+  transform: scale(0.94);
+}
+.colorear__miniatura--actual {
+  box-shadow: 0 0 0 3px var(--mostaza);
+}
+
+.colorear__miniatura-arte {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  background: var(--papel);
+}
+.colorear__miniatura-arte svg {
+  width: 100%;
+  height: 100%;
+}
+.colorear__miniatura-arte .colorear__region {
+  stroke-width: 3;
+}
+
+.colorear__miniatura-nombre {
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
+  color: var(--tinta-suave);
+}
+
+/* --------------------------------------------------------------- panel */
+
+.colorear__panel {
+  flex: 0 0 auto;
+  width: clamp(150px, 22vw, 230px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-height: 0;
+}
+
+.colorear__paleta {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: var(--sp-2);
+  border-radius: var(--r-lg);
+  background: var(--papel);
+  box-shadow: var(--sombra-1), var(--sombra-2);
+  overflow-y: auto;
+}
+
+.colorear__color {
+  aspect-ratio: 1 / 1;
+  min-height: 44px;
+  border-radius: var(--r-md);
+  box-shadow: inset 0 0 0 2px rgba(58, 52, 47, 0.12), 0 2px 0 rgba(58, 52, 47, 0.08);
+  transition: transform 140ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.colorear__color[aria-pressed='true'] {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 3px var(--papel), 0 0 0 6px var(--tinta);
+}
+
+.colorear__herramientas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.colorear__util {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-full);
+  background: var(--papel);
+  box-shadow: var(--sombra-1), var(--sombra-2);
+  color: var(--tinta-suave);
+  display: grid;
+  place-items: center;
+  padding: 12px;
+  transition: transform 140ms ease;
+}
+.colorear__util svg {
+  width: 100%;
+  height: 100%;
+}
+.colorear__util[aria-pressed='true'] {
+  background: var(--mostaza);
+  color: var(--tinta);
+  transform: scale(1.06);
+}
+.colorear__util:active {
+  transform: scale(0.92);
+}
+
+.colorear__listo {
+  margin-top: auto;
+}
+
+/* ------------------------------------------------------------ vertical */
+
+@media (orientation: portrait) {
+  .colorear__disposicion {
+    flex-direction: column;
+  }
+  .colorear__lienzo {
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+  }
+  .colorear__panel {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--sp-2);
+  }
+  .colorear__paleta {
+    flex: 1 1 auto;
+    grid-template-columns: repeat(8, 1fr);
+  }
+  .colorear__listo {
+    margin-top: 0;
+  }
+}
+
+@media (orientation: portrait) and (max-width: 560px) {
+  .colorear__paleta {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .colorear__panel {
+    flex-wrap: wrap;
+  }
+}

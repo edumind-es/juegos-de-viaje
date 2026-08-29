@@ -1,0 +1,21 @@
+# Secretos y configuración local
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Datos y copias
+*.db
+*.sqlite*
+*.bak
+backups/
+
+# Ruido del sistema y del editor
+.DS_Store
+*.log
+.idea/
+.vscode/
+
+# Datos de origen de los mapas (se descargan al regenerarlos, ver deploy/generar_mapas.py)
+*.geojson
