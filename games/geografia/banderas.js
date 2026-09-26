@@ -218,7 +218,8 @@ export const BANDERAS = {
   ETH: () => hor('#078930', '#fcdd09', '#da121a') + C(45, 30, 11, '#0f47af') + E(45, 30, 8, '#fcdd09'),
   TZA: () =>
     R(0, 0, 90, 60, '#1eb53a') + P('90,0 90,60 0,60', '#00a3dd') +
-    `<path d="M0 0L90 60" stroke="#000" stroke-width="16"/><path d="M0 0L90 60" stroke="#fcd116" stroke-width="22" opacity="0"/>`,
+    // la banda negra sube del asta (abajo) al batiente (arriba), con orla amarilla
+    `<path d="M0 60L90 0" stroke="#fcd116" stroke-width="22"/><path d="M0 60L90 0" stroke="#000" stroke-width="14"/>`,
   ZAF: () =>
     R(0, 0, 90, 60, '#002395') + P('0,0 90,0 90,26 0,26', '#de3831') +
     P('0,34 90,34 90,60 0,60', '#002395') + R(0, 24, 90, 12, '#fff') +

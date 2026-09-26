@@ -16,6 +16,10 @@ import { bandera, CON_BANDERA } from './banderas.js';
 
 const RONDAS = 8;
 
+/* Ciudades autónomas: se dibujan en el mapa, pero no se preguntan como
+   comunidad ni como provincia porque no lo son. */
+const CIUDADES_AUTONOMAS = ['Ceuta', 'Melilla'];
+
 /* Países que una niña puede reconocer pronto: se usan en el nivel de las peques. */
 const CONOCIDOS = ['ESP', 'FRA', 'ITA', 'DEU', 'PRT', 'GBR', 'USA', 'BRA', 'ARG', 'MEX', 'JPN', 'CHN', 'MAR', 'CAN'];
 
@@ -162,8 +166,12 @@ export function iniciar(ctx) {
     if (id === 'provincias' || id === 'ccaa') {
       const { PROVINCIAS, VISTA, CAJA_CANARIAS } = await datos('espana');
       const porCcaa = id === 'ccaa';
-      const capas = PROVINCIAS.map((p) => ({ d: p.d, id: porCcaa ? p.ccaa : p.n }));
-      const lista = porCcaa ? [...new Set(PROVINCIAS.map((p) => p.ccaa))] : PROVINCIAS.map((p) => p.n);
+      const preguntables = PROVINCIAS.filter((p) => !CIUDADES_AUTONOMAS.includes(p.n));
+      const capas = PROVINCIAS.map((p) => ({
+        d: p.d,
+        id: CIUDADES_AUTONOMAS.includes(p.n) ? null : porCcaa ? p.ccaa : p.n,
+      }));
+      const lista = porCcaa ? [...new Set(preguntables.map((p) => p.ccaa))] : preguntables.map((p) => p.n);
       return muestra(lista, Math.min(RONDAS, lista.length)).map((n) => ({
         tipo: 'mapa',
         vista: VISTA,

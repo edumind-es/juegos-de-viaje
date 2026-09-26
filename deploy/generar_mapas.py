@@ -292,8 +292,20 @@ CCAA_ES = {
     "Valenciana": "Comunidad Valenciana",
     "Madrid": "Comunidad de Madrid",
     "Murcia": "Región de Murcia",
-    "Islas Baleares": "Islas Baleares",
+    "Islas Baleares": "Illes Balears",
     "Asturias": "Principado de Asturias",
+}
+
+# Natural Earth trae los nombres castellanizados; aquí se pasan a la
+# denominación oficial de cada provincia.
+TOPONIMO_OFICIAL = {
+    "La Coruña": "A Coruña",
+    "Orense": "Ourense",
+    "Gerona": "Girona",
+    "Lérida": "Lleida",
+    "Guipúzcoa": "Gipuzkoa",
+    "Vizcaya": "Bizkaia",
+    "Islas Baleares": "Illes Balears",
 }
 
 cx0, cy0, cx1, cy1 = bbox_canarias(esp_geo["features"])
@@ -313,6 +325,7 @@ for f in esp_geo["features"]:
     nombre = p.get("name_es") or p.get("name")
     region = p.get("region") or nombre
     ccaa = CCAA_ES.get(region, region)
+    nombre = TOPONIMO_OFICIAL.get(nombre, nombre)
     geom = f["geometry"]
 
     proy = proy_canarias if region == "Canary Is." else mercator
