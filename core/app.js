@@ -380,7 +380,7 @@ export function pantallaHub() {
   const btnViaje = botonIcono(icono.nube(), {
     aria: 'Modo sin conexión',
     onPulsar: () => {
-      const velo = el('div', { clase: 'velo', role: 'dialog', 'aria-modal': 'true' });
+      const velo = el('div', { clase: 'velo', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Modo sin conexión' });
       let devolverFoco = () => {};
       const cerrar = () => {
         velo.remove();
@@ -488,7 +488,7 @@ export function pantallaProgreso() {
       ])
     );
   }
-  scroll.append(el('h3', { texto: 'Mis medallas', estilo: { marginBottom: '12px' } }), rejilla);
+  scroll.append(el('h2', { texto: 'Mis medallas', estilo: { marginBottom: '12px' } }), rejilla);
 
   raiz.append(barra, resumen, scroll);
   montar(raiz);

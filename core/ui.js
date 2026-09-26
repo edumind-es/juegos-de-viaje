@@ -126,7 +126,7 @@ export function atraparFoco(velo) {
  * botones: [{ texto, clase, onPulsar, cierra }]
  */
 export function dialogo({ titulo, texto, html, botones = [], cerrable = false, leer = null }) {
-  const velo = el('div', { clase: 'velo', role: 'dialog', 'aria-modal': 'true' });
+  const velo = el('div', { clase: 'velo', role: 'dialog', 'aria-modal': 'true', 'aria-label': titulo || texto || 'Aviso' });
   const caja = el('div', { clase: 'dialogo' });
 
   if (titulo) caja.appendChild(el('h2', { texto: titulo }));
@@ -198,7 +198,7 @@ export function resultado({ estrellas = 0, texto = '', medallas = [], onRepetir,
   const lista = FRASES[estrellas] || FRASES[0];
   const titulo = lista[(Math.random() * lista.length) | 0];
 
-  const velo = el('div', { clase: 'velo', role: 'dialog', 'aria-modal': 'true' });
+  const velo = el('div', { clase: 'velo', role: 'dialog', 'aria-modal': 'true', 'aria-label': titulo });
   const caja = el('div', { clase: 'dialogo' });
   caja.appendChild(el('h2', { texto: titulo }));
   caja.appendChild(filaEstrellas(estrellas));
