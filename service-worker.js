@@ -7,7 +7,7 @@
  * caché nueva, borrará las antiguas y el modo sin conexión seguirá intacto.
  */
 
-const VERSION = 'v1.4.0';
+const VERSION = 'v1.5.0';
 const CACHE = `etg-${VERSION}`;
 
 const ARCHIVOS = [
@@ -24,6 +24,11 @@ const ARCHIVOS = [
   './assets/fonts/outfit-400-latin.woff2',
   './assets/fonts/outfit-600-latin.woff2',
   './assets/fonts/outfit-700-latin.woff2',
+  './assets/fonts/OFL.txt',
+
+  // textos de las licencias: los enlaza el diálogo «Acerca de»
+  './LICENSE-AGPL-3.0-or-later.txt',
+  './LICENSE-EUPL-1.2.txt',
 
   './assets/icons/icon-192.png',
   './assets/icons/icon-512.png',

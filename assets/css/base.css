@@ -460,6 +460,11 @@ body::before {
   color: var(--tinta-suave);
   margin-bottom: var(--sp-3);
 }
+.dialogo a {
+  color: var(--teal-osc);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .dialogo__botones {
   display: flex;
   flex-wrap: wrap;

@@ -110,6 +110,7 @@ export function pantallaPerfiles() {
 
   const pie = el('div', { clase: 'perfiles__pie' });
   pie.appendChild(boton('Editar perfiles', { clase: 'btn btn--fantasma', onPulsar: editarPerfiles }));
+  pie.appendChild(boton('Acerca de', { clase: 'btn btn--fantasma', onPulsar: acercaDe }));
 
   const btnInstalar = boton('Instalar en la tablet', {
     clase: 'btn btn--teal' + (instalador ? '' : ' oculto'),
@@ -129,6 +130,31 @@ export function pantallaPerfiles() {
   raiz.appendChild(caja);
   montar(raiz);
   if (vozActiva()) decir('¿Quién va a jugar?');
+}
+
+/**
+ * Autoría, licencia y repositorio, visibles desde la propia app. Los textos
+ * de las licencias se sirven desde la misma carpeta, así que se pueden leer
+ * también sin conexión.
+ */
+const REPO = 'https://github.com/edumind-es/juegos-de-viaje';
+function acercaDe() {
+  const enlace = (href, texto) => `<a href="${href}" target="_blank" rel="noopener">${texto}</a>`;
+  dialogo({
+    titulo: 'Acerca de',
+    html: `
+      <p><b>Juegos de viaje</b> · EDUmind®<br>Autoría: Luis Vilela Acuña</p>
+      <p>Software libre con doble licencia, a elección:<br>
+        ${enlace('./LICENSE-AGPL-3.0-or-later.txt', 'AGPL-3.0-or-later')} o
+        ${enlace('./LICENSE-EUPL-1.2.txt', 'EUPL-1.2')}</p>
+      <p>${enlace(REPO, 'Código fuente en GitHub')} ·
+        ${enlace(REPO + '/blob/main/CREDITS.md', 'Créditos')} ·
+        ${enlace(REPO + '/blob/main/DECISIONES.md', 'Cómo funciona')}</p>
+      <p>Sin cuentas ni analítica: los perfiles y el progreso se guardan solo en este dispositivo.</p>
+    `,
+    cerrable: true,
+    botones: [{ texto: 'Cerrar', clase: 'btn btn--principal' }],
+  });
 }
 
 function editarPerfiles() {
