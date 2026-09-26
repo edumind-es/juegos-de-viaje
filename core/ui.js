@@ -89,6 +89,38 @@ export function vibrar(ms = 18) {
 
 /* ------------------------------------------------------------- diálogos */
 
+const FOCABLES = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
+/**
+ * Accesibilidad de un diálogo modal: mueve el foco dentro al abrirlo, lo
+ * retiene mientras esté abierto (Tab y Mayús+Tab dan la vuelta) y devuelve
+ * una función que lo restituye al elemento que lo tenía antes.
+ */
+export function atraparFoco(velo) {
+  const previo = document.activeElement;
+  const focables = () => [...velo.querySelectorAll(FOCABLES)].filter((n) => !n.disabled);
+  velo.setAttribute('tabindex', '-1');
+  velo.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') return;
+    const f = focables();
+    if (!f.length) return;
+    const primero = f[0];
+    const ultimo = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === primero) {
+      e.preventDefault();
+      ultimo.focus();
+    } else if (!e.shiftKey && document.activeElement === ultimo) {
+      e.preventDefault();
+      primero.focus();
+    }
+  });
+  // el foco entra en cuanto el diálogo está en el DOM
+  requestAnimationFrame(() => (focables()[0] || velo).focus());
+  return () => {
+    if (previo?.isConnected && typeof previo.focus === 'function') previo.focus();
+  };
+}
+
 /**
  * Diálogo modal. Devuelve una función para cerrarlo.
  * botones: [{ texto, clase, onPulsar, cierra }]
@@ -102,9 +134,11 @@ export function dialogo({ titulo, texto, html, botones = [], cerrable = false, l
   if (html) caja.appendChild(el('div', { html }));
 
   const fila = el('div', { clase: 'dialogo__botones' });
+  let devolverFoco = () => {};
   const cerrar = () => {
     callar();
     velo.remove();
+    devolverFoco();
   };
 
   for (const b of botones) {
@@ -128,6 +162,7 @@ export function dialogo({ titulo, texto, html, botones = [], cerrable = false, l
   }
 
   document.body.appendChild(velo);
+  devolverFoco = atraparFoco(velo);
   if (leer && vozActiva()) decir(leer);
   return cerrar;
 }
@@ -201,6 +236,7 @@ export function resultado({ estrellas = 0, texto = '', medallas = [], onRepetir,
   caja.appendChild(fila);
   velo.appendChild(caja);
   document.body.appendChild(velo);
+  atraparFoco(velo);
 
   if (estrellas >= 2 || medallas.length) confeti(medallas.length ? 90 : 60);
   if (medallas.length) sonido.medalla();
@@ -219,7 +255,8 @@ export function marcoJuego({ titulo, instruccion = '', onSalir, onPausaExtra = n
 
   const barra = el('header', { clase: 'barra-juego' });
   const btnAtras = botonIcono(icono.atras(), { aria: 'Volver al menú', onPulsar: () => onSalir?.() });
-  const tit = el('h2', { clase: 'barra-juego__titulo', texto: titulo });
+  // cada pantalla de juego lleva su propio h1 (el título del juego)
+  const tit = el('h1', { clase: 'barra-juego__titulo', texto: titulo });
   const marcador = el('div', { clase: 'marcador', 'aria-live': 'polite' });
   const btnPausa = botonIcono(icono.pausa(), {
     aria: 'Pausa',

@@ -98,6 +98,14 @@
   cursor: pointer;
 }
 
+/* foco de teclado sobre el mapa: el contorno del path, no un rectángulo */
+.geo__tocable:focus-visible {
+  outline: none;
+  stroke: var(--azul-osc);
+  stroke-width: 3;
+  stroke-dasharray: none;
+}
+
 .geo__agua {
   fill: rgba(111, 168, 199, 0.001); /* invisible pero tocable */
   stroke: rgba(45, 108, 140, 0.35);

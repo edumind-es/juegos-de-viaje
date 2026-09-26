@@ -1,6 +1,6 @@
 /**
  * Secuencias.
- * Nivel 1: patrones simples A-B-A-B o A-A-B con formas y colores.
+ * Nivel 1: patrones simples A-B-A-B con formas y colores.
  * Nivel 2: series numéricas y patrones A-B-C combinados, más largos.
  */
 
@@ -13,6 +13,30 @@ import { azar, entre, elige, baraja, muestra } from '../../core/rng.js';
 const RONDAS = 8;
 const FORMAS = ['circulo', 'cuadrado', 'triangulo', 'estrella', 'corazon', 'hexagono', 'gota', 'flor'];
 const COLORES = [PALETA.terracota, PALETA.mostaza, PALETA.teal, PALETA.azul, PALETA.lila, PALETA.verde, PALETA.rosa];
+
+/* Nombres para el lector de pantalla: los de las formas y los mismos que
+   usa el juego Colores para la paleta. */
+const NOMBRE_FORMA = {
+  circulo: 'círculo',
+  cuadrado: 'cuadrado',
+  triangulo: 'triángulo',
+  estrella: 'estrella',
+  corazon: 'corazón',
+  hexagono: 'hexágono',
+  gota: 'gota',
+  flor: 'flor',
+};
+const NOMBRE_COLOR = {
+  [PALETA.terracota]: 'rojo',
+  [PALETA.mostaza]: 'amarillo',
+  [PALETA.teal]: 'verde azulado',
+  [PALETA.azul]: 'azul',
+  [PALETA.lila]: 'morado',
+  [PALETA.verde]: 'verde',
+  [PALETA.rosa]: 'rosa',
+};
+const describir = (p) =>
+  p.tipo === 'numero' ? String(p.valor) : `${NOMBRE_FORMA[p.forma] || p.forma} ${NOMBRE_COLOR[p.color] || ''}`.trim();
 
 export function iniciar(ctx) {
   const { area, nivel, marco } = ctx;
@@ -124,7 +148,7 @@ export function iniciar(ctx) {
     limpiar(opciones);
     for (const p of baraja([reto.solucion, ...reto.distractores])) {
       const esCorrecta = p === reto.solucion;
-      const b = el('button', { clase: 'secuencias__opcion', type: 'button' }, [pieza(p)]);
+      const b = el('button', { clase: 'secuencias__opcion', type: 'button', 'aria-label': describir(p) }, [pieza(p)]);
       b.addEventListener('click', () => responder(b, esCorrecta, reto.solucion));
       opciones.appendChild(b);
     }

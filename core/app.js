@@ -5,7 +5,7 @@
 
 import { CATALOGO, cargarJuego, nombreJuego } from './router.js';
 import { avatar, icono, medalla as arteMedalla, PALETA } from './art.js';
-import { el, limpiar, boton, botonIcono, marcoJuego, dialogo, resultado } from './ui.js';
+import { el, limpiar, boton, botonIcono, marcoJuego, dialogo, resultado, atraparFoco } from './ui.js';
 import { sonido, despertar, estaSilenciado, alternarSilencio } from './audio.js';
 import { decir, callar, vozActiva, alternarVoz, vozDisponible } from './speech.js';
 import {
@@ -354,8 +354,12 @@ export function pantallaHub() {
   const btnViaje = botonIcono(icono.nube(), {
     aria: 'Modo sin conexión',
     onPulsar: () => {
-      const velo = el('div', { clase: 'velo' });
-      const cerrar = () => velo.remove();
+      const velo = el('div', { clase: 'velo', role: 'dialog', 'aria-modal': 'true' });
+      let devolverFoco = () => {};
+      const cerrar = () => {
+        velo.remove();
+        devolverFoco();
+      };
       const caja = el('div', { clase: 'dialogo' }, [
         el('h2', { texto: 'Modo sin conexión' }),
         panelViaje(),
@@ -366,6 +370,7 @@ export function pantallaHub() {
       velo.appendChild(caja);
       velo.addEventListener('click', (e) => e.target === velo && cerrar());
       document.body.appendChild(velo);
+      devolverFoco = atraparFoco(velo);
     },
   });
 
@@ -429,7 +434,7 @@ export function pantallaProgreso() {
   const barra = el('header', { clase: 'barra-juego' });
   barra.append(
     botonIcono(icono.atras(), { aria: 'Volver', onPulsar: pantallaHub }),
-    el('h2', { clase: 'barra-juego__titulo', texto: 'Mi progreso' })
+    el('h1', { clase: 'barra-juego__titulo', texto: 'Mi progreso' })
   );
 
   const resumen = el('div', { clase: 'progreso__resumen' }, [
