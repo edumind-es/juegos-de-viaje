@@ -16,6 +16,10 @@ import { bandera, CON_BANDERA } from './banderas.js';
 
 const RONDAS = 8;
 
+/* Ciudades autónomas: se dibujan en el mapa, pero no se preguntan como
+   comunidad ni como provincia porque no lo son. */
+const CIUDADES_AUTONOMAS = ['Ceuta', 'Melilla'];
+
 /* Países que una niña puede reconocer pronto: se usan en el nivel de las peques. */
 const CONOCIDOS = ['ESP', 'FRA', 'ITA', 'DEU', 'PRT', 'GBR', 'USA', 'BRA', 'ARG', 'MEX', 'JPN', 'CHN', 'MAR', 'CAN'];
 
@@ -138,7 +142,7 @@ export function iniciar(ctx) {
       return muestra(elegibles, RONDAS).map((p) => ({
         tipo: 'mapa',
         vista: VISTA,
-        capas: PAISES.map((q) => ({ d: q.d, id: q.id })),
+        capas: PAISES.map((q) => ({ d: q.d, id: q.id, n: q.n })),
         objetivo: p.id,
         pista: id === 'banderaMapa' ? bandera(p.id) : null,
         enunciado: id === 'banderaMapa' ? '¿Dónde está este país?' : `Toca ${p.n}`,
@@ -152,7 +156,7 @@ export function iniciar(ctx) {
       return muestra(europeos, RONDAS).map((p) => ({
         tipo: 'mapa',
         vista: VISTA,
-        capas: PAISES.map((q) => ({ d: q.d, id: q.eu ? q.id : null })),
+        capas: PAISES.map((q) => ({ d: q.d, id: q.eu ? q.id : null, n: q.n })),
         objetivo: p.id,
         enunciado: `Toca: ${p.n}`,
         respuesta: p.n,
@@ -162,8 +166,12 @@ export function iniciar(ctx) {
     if (id === 'provincias' || id === 'ccaa') {
       const { PROVINCIAS, VISTA, CAJA_CANARIAS } = await datos('espana');
       const porCcaa = id === 'ccaa';
-      const capas = PROVINCIAS.map((p) => ({ d: p.d, id: porCcaa ? p.ccaa : p.n }));
-      const lista = porCcaa ? [...new Set(PROVINCIAS.map((p) => p.ccaa))] : PROVINCIAS.map((p) => p.n);
+      const preguntables = PROVINCIAS.filter((p) => !CIUDADES_AUTONOMAS.includes(p.n));
+      const capas = PROVINCIAS.map((p) => ({
+        d: p.d,
+        id: CIUDADES_AUTONOMAS.includes(p.n) ? null : porCcaa ? p.ccaa : p.n,
+      }));
+      const lista = porCcaa ? [...new Set(preguntables.map((p) => p.ccaa))] : preguntables.map((p) => p.n);
       return muestra(lista, Math.min(RONDAS, lista.length)).map((n) => ({
         tipo: 'mapa',
         vista: VISTA,
@@ -336,19 +344,27 @@ export function iniciar(ctx) {
     }
 
     const nodosCorrectos = [];
-    const añadir = (d, id, clase) => {
+    // las zonas tocables se pueden recorrer con el tabulador y activar con
+    // Enter o Espacio, igual que las regiones de Colorear
+    const accesible = (nodo, nombre) => {
+      nodo.setAttribute('tabindex', '0');
+      nodo.setAttribute('role', 'button');
+      nodo.setAttribute('aria-label', nombre);
+    };
+    const añadir = (d, id, clase, nombre = id) => {
       const path = document.createElementNS(ns, 'path');
       path.setAttribute('d', d);
       path.setAttribute('class', clase + (id ? ' geo__tocable' : ''));
       if (id) {
         path.dataset.id = id;
+        accesible(path, nombre);
         if (id === p.objetivo) nodosCorrectos.push(path);
       }
       lienzo.appendChild(path);
       return path;
     };
 
-    for (const capa of p.capas) añadir(capa.d, capa.id, 'geo__tierra');
+    for (const capa of p.capas) añadir(capa.d, capa.id, 'geo__tierra', capa.n || capa.id);
     for (const z of p.zonas || []) añadir(z.d, z.id, 'geo__agua');
     for (const l of p.lineas || []) {
       añadir(l.d, null, 'geo__rio');
@@ -360,14 +376,22 @@ export function iniciar(ctx) {
       g.setAttribute('d', `M${m.x} ${m.y - 12}L${m.x + 11} ${m.y + 7}L${m.x - 11} ${m.y + 7}Z`);
       g.setAttribute('class', 'geo__marca geo__tocable');
       g.dataset.id = m.id;
+      accesible(g, m.id);
       if (m.id === p.objetivo) nodosCorrectos.push(g);
       lienzo.appendChild(g);
     }
 
-    svg.addEventListener('click', (e) => {
-      const t = e.target.closest?.('[data-id]');
+    const tocar = (t) => {
       if (!t || bloqueado) return;
       responder(t, t.dataset.id === p.objetivo, p, nodosCorrectos);
+    };
+    svg.addEventListener('click', (e) => tocar(e.target.closest?.('[data-id]')));
+    svg.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      const t = e.target.closest?.('[data-id]');
+      if (!t) return;
+      e.preventDefault();
+      tocar(t);
     });
 
     envoltorio.appendChild(svg);

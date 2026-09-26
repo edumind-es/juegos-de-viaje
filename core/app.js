@@ -5,7 +5,7 @@
 
 import { CATALOGO, cargarJuego, nombreJuego } from './router.js';
 import { avatar, icono, medalla as arteMedalla, PALETA } from './art.js';
-import { el, limpiar, boton, botonIcono, marcoJuego, dialogo, resultado } from './ui.js';
+import { el, limpiar, boton, botonIcono, marcoJuego, dialogo, resultado, atraparFoco } from './ui.js';
 import { sonido, despertar, estaSilenciado, alternarSilencio } from './audio.js';
 import { decir, callar, vozActiva, alternarVoz, vozDisponible } from './speech.js';
 import {
@@ -110,6 +110,7 @@ export function pantallaPerfiles() {
 
   const pie = el('div', { clase: 'perfiles__pie' });
   pie.appendChild(boton('Editar perfiles', { clase: 'btn btn--fantasma', onPulsar: editarPerfiles }));
+  pie.appendChild(boton('Acerca de', { clase: 'btn btn--fantasma', onPulsar: acercaDe }));
 
   const btnInstalar = boton('Instalar en la tablet', {
     clase: 'btn btn--teal' + (instalador ? '' : ' oculto'),
@@ -129,6 +130,31 @@ export function pantallaPerfiles() {
   raiz.appendChild(caja);
   montar(raiz);
   if (vozActiva()) decir('¿Quién va a jugar?');
+}
+
+/**
+ * Autoría, licencia y repositorio, visibles desde la propia app. Los textos
+ * de las licencias se sirven desde la misma carpeta, así que se pueden leer
+ * también sin conexión.
+ */
+const REPO = 'https://github.com/edumind-es/juegos-de-viaje';
+function acercaDe() {
+  const enlace = (href, texto) => `<a href="${href}" target="_blank" rel="noopener">${texto}</a>`;
+  dialogo({
+    titulo: 'Acerca de',
+    html: `
+      <p><b>Juegos de viaje</b> · EDUmind®<br>Autoría: Luis Vilela Acuña</p>
+      <p>Software libre con doble licencia, a elección:<br>
+        ${enlace('./LICENSE-AGPL-3.0-or-later.txt', 'AGPL-3.0-or-later')} o
+        ${enlace('./LICENSE-EUPL-1.2.txt', 'EUPL-1.2')}</p>
+      <p>${enlace(REPO, 'Código fuente en GitHub')} ·
+        ${enlace(REPO + '/blob/main/CREDITS.md', 'Créditos')} ·
+        ${enlace(REPO + '/blob/main/DECISIONES.md', 'Cómo funciona')}</p>
+      <p>Sin cuentas ni analítica: los perfiles y el progreso se guardan solo en este dispositivo.</p>
+    `,
+    cerrable: true,
+    botones: [{ texto: 'Cerrar', clase: 'btn btn--principal' }],
+  });
 }
 
 function editarPerfiles() {
@@ -354,8 +380,12 @@ export function pantallaHub() {
   const btnViaje = botonIcono(icono.nube(), {
     aria: 'Modo sin conexión',
     onPulsar: () => {
-      const velo = el('div', { clase: 'velo' });
-      const cerrar = () => velo.remove();
+      const velo = el('div', { clase: 'velo', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Modo sin conexión' });
+      let devolverFoco = () => {};
+      const cerrar = () => {
+        velo.remove();
+        devolverFoco();
+      };
       const caja = el('div', { clase: 'dialogo' }, [
         el('h2', { texto: 'Modo sin conexión' }),
         panelViaje(),
@@ -366,6 +396,7 @@ export function pantallaHub() {
       velo.appendChild(caja);
       velo.addEventListener('click', (e) => e.target === velo && cerrar());
       document.body.appendChild(velo);
+      devolverFoco = atraparFoco(velo);
     },
   });
 
@@ -429,7 +460,7 @@ export function pantallaProgreso() {
   const barra = el('header', { clase: 'barra-juego' });
   barra.append(
     botonIcono(icono.atras(), { aria: 'Volver', onPulsar: pantallaHub }),
-    el('h2', { clase: 'barra-juego__titulo', texto: 'Mi progreso' })
+    el('h1', { clase: 'barra-juego__titulo', texto: 'Mi progreso' })
   );
 
   const resumen = el('div', { clase: 'progreso__resumen' }, [
@@ -457,7 +488,7 @@ export function pantallaProgreso() {
       ])
     );
   }
-  scroll.append(el('h3', { texto: 'Mis medallas', estilo: { marginBottom: '12px' } }), rejilla);
+  scroll.append(el('h2', { texto: 'Mis medallas', estilo: { marginBottom: '12px' } }), rejilla);
 
   raiz.append(barra, resumen, scroll);
   montar(raiz);

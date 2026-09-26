@@ -73,7 +73,7 @@ consola, si el modo sin conexión está realmente listo.
 2. Subir la versión en `service-worker.js`:
 
 ```js
-const VERSION = 'v1.0.1';   // ← cambiar SIEMPRE al desplegar cambios
+const VERSION = 'v1.5.1';   // ← cambiar SIEMPRE al desplegar cambios
 ```
 
 Sin ese cambio, las tablets seguirán usando la caché antigua indefinidamente.
@@ -82,6 +82,7 @@ app queda lista al siguiente arranque.
 
 3. Si se añade un fichero nuevo (un juego, una plantilla, un icono), **añadirlo
    también a la lista `ARCHIVOS`** del service worker, o no estará disponible sin red.
+4. Anotar el cambio en [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
@@ -188,12 +189,59 @@ Las banderas (99) están **dibujadas por código** en `games/geografia/banderas.
 con primitivas geométricas (franjas, cruces nórdicas, estrellas): ni imágenes ni
 emoji. Añadir una es escribir una línea en ese diccionario.
 
+## Cómo modificarlo
+
+No hay build: se edita el fichero, se sube `VERSION` en `service-worker.js` y se sirve la carpeta.
+
+- **Añadir un minijuego:** crear `games/<nombre>/game.js` que exporte `iniciar(ctx)`
+  (recibe `area`, `nivel` y `marco`; ver cualquiera de los existentes) y su `style.css`;
+  darlo de alta en el `CATALOGO` de `core/router.js` (id, nombres por nivel y arte) y
+  añadir los dos ficheros a `ARCHIVOS` del service worker.
+- **Añadir una bandera:** una línea en el diccionario de `games/geografia/banderas.js`
+  con el código ISO-3 del país y las primitivas (`hor`, `ver`, `R`, `C`, `P`, `E`…).
+  Para preguntarla en nivel 1, añadir el código a `CONOCIDOS` en `games/geografia/game.js`.
+- **Añadir un lugar (mar, montaña):** una entrada en `games/geografia/datos/lugares.js`
+  con sus coordenadas; los mapas de países y provincias se regeneran con
+  `deploy/generar_mapas.py`.
+- **Añadir una lámina para colorear:** un objeto en `games/colorear/plantillas.js`
+  (SVG con regiones `.colorear__region`, o `mandala({sectores, anillos})`).
+- **Cambiar textos, edades o perfiles por defecto:** `core/profiles.js` (perfiles y el
+  umbral de edad de cada nivel) y los textos están en el propio módulo de cada juego.
+  No hay sistema de traducción: el proyecto está en español; para otro idioma se
+  traducen los textos de `core/` y de cada `games/*/game.js`.
+- **Servicios opcionales:** la lectura en voz alta (`core/speech.js`) y el sonido
+  (`core/audio.js`) se apagan desde el hub; para retirarlos del todo basta con dejar
+  vacías las funciones exportadas. No hay ningún otro servicio que desactivar: no hay
+  analítica, ni backend, ni cargas externas.
+
+## Hecho con IA
+
+Este recurso se ha desarrollado con *vibe coding* con asistencia de IA (Claude Code y
+ChatGPT), siguiendo la [política de IA de EDUmind](https://edumind.es/es/legal/ia).
+Lo que ha comprobado el autor:
+
+- Ejecución en navegador (Chrome, Safari) y en dispositivos reales (tablet Android e iPad),
+  incluido el modo sin conexión tras instalar la app.
+- Revisión de los textos que ven las niñas y niños (instrucciones, botones, nombres de
+  lugares y países).
+- Los rangos de las operaciones, las mezclas de color, la adscripción provincia-comunidad,
+  las altitudes y las 99 banderas se revisaron una a una en la evaluación VCER del
+  2026-09-25 (hecha también con ayuda de IA) y se corrigió lo que salió: ver
+  [CHANGELOG.md](CHANGELOG.md).
+- Revisión de licencias del material ajeno ([CREDITS.md](CREDITS.md)).
+
+No hay pruebas automáticas ni integración continua: el proyecto no tiene build ni
+dependencias, y las comprobaciones se hacen a mano en dispositivo.
+
 ## Créditos
 
 EDUmind — Luis Vilela Acuña.
 Tipografías: [Fraunces](https://fonts.google.com/specimen/Fraunces) y
-[Outfit](https://fonts.google.com/specimen/Outfit), ambas bajo SIL Open Font License 1.1.
+[Outfit](https://fonts.google.com/specimen/Outfit), ambas bajo SIL Open Font License 1.1
+([assets/fonts/OFL.txt](assets/fonts/OFL.txt)).
 Datos geográficos: [Natural Earth](https://www.naturalearthdata.com/), dominio público.
+Inventario completo del material ajeno en [CREDITS.md](CREDITS.md); el porqué de las
+decisiones de diseño y privacidad, en [DECISIONES.md](DECISIONES.md).
 
 ---
 
@@ -207,7 +255,7 @@ Este repositorio es una *release saneada*: no incluye la configuración de despl
 
 ## Licencia
 
-Licencia doble **AGPL-3.0-or-later** *o* **EUPL-1.2**, a elección de quien la reutilice. Ver [LICENSE](LICENSE) y [NOTICE](NOTICE).
+Licencia doble **AGPL-3.0-or-later** *o* **EUPL-1.2**, a elección de quien la reutilice. Ver [LICENSE](LICENSE) y [NOTICE](NOTICE). Dentro de la app, el botón **Acerca de** de la pantalla de perfiles muestra la autoría, la licencia y el enlace a este repositorio.
 
 Las tipografías Fraunces y Outfit se distribuyen bajo SIL Open Font License 1.1. Los mapas derivan de [Natural Earth](https://www.naturalearthdata.com) (dominio público).
 

@@ -19,3 +19,6 @@ backups/
 
 # Datos de origen de los mapas (se descargan al regenerarlos, ver deploy/generar_mapas.py)
 *.geojson
+
+# Python
+__pycache__/
