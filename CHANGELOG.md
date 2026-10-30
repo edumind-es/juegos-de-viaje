@@ -11,6 +11,8 @@ Formato libre, una entrada por versión publicada. La versión es la de `VERSION
 - Modo **Uno contra uno** con los dos perfiles: por turnos, una persona escribe una palabra
   secreta (oculta con puntos, o «Palabra sorpresa») y pasa la tablet; la otra la adivina.
   Dos palabras para cada una. Los fallos y las mayúsculas se adaptan a quien tiene la tablet.
+- En lugar del muñeco ahorcado, un globo atado a una piedra que pierde aire con cada fallo
+  y sube contento al acertar la palabra.
 - Teclado en pantalla A–Z con Ñ; la A destapa también la Á. Se puede jugar con teclado físico.
 - Medalla nueva «Palabrera» (10 partidas). «Curiosa» pide ahora haber probado los 10 juegos.
 

@@ -1,9 +1,9 @@
 /**
  * Ahorcado.
  * Dos modos:
- *  - Yo sola/o: tres palabras seguidas. Nivel 1 con dibujo de pista y 10 fallos
- *    (el dibujo empieza vacío); nivel 2 por categorías y 7 fallos (la horca ya
- *    está montada).
+ *  - Yo solo: tres palabras seguidas. Nivel 1 con dibujo de pista y 10 fallos;
+ *    nivel 2 por categorías y 7 fallos. En lugar del muñeco ahorcado hay un
+ *    globo que se desinfla un poco con cada fallo.
  *  - Uno contra uno: con los dos perfiles. Por turnos, una persona escribe una
  *    palabra secreta (o pide una sorpresa) y la otra la adivina. Dos palabras
  *    para cada una. Los fallos permitidos dependen de la edad de quien adivina.
@@ -75,33 +75,41 @@ function palabraAlAzar(nivel, evitar = []) {
 
 /* ----------------------------------------------------------------- dibujo */
 
-// Diez trazos, en el orden en que aparecen. Los tres primeros son la horca.
-const TRAZOS = [
-  'M12 132h62',
-  'M30 132V12',
-  'M30 12h54M30 34l22-22',
-  'M84 12v16',
-  'M84 28a12 12 0 1 1 0 24a12 12 0 1 1 0-24',
-  'M84 52v36',
-  'M84 62l-15 15',
-  'M84 62l15 15',
-  'M84 88l-13 22',
-  'M84 88l13 22',
-];
-const PARTES_HORCA = 3;
+// En vez del muñeco clásico, un globo atado a una piedra: con cada fallo pierde
+// aire, se encoge y baja. La variable CSS --p (de 0 a 1) marca cuánto ha perdido.
+const NUDO_Y = 92; // dónde está el nudo con el globo lleno
+const BAJADA = 26; // cuánto baja el nudo cuando ya no le queda aire
+const PIEDRA_Y = 124;
+
+/** Cuerda del nudo a la piedra; cuanto más baja el globo, más floja. */
+function cuerda(p) {
+  const y = NUDO_Y + 4 + p * BAJADA;
+  const largo = PIEDRA_Y - y;
+  return `M60 ${y}c-${4 + p * 6} ${largo * 0.35} ${6 + p * 6} ${largo * 0.6} 0 ${largo}`;
+}
 
 function dibujoSVG() {
-  const trazos = TRAZOS.map(
-    (d, i) =>
-      `<path class="ahorcado__trazo${i < PARTES_HORCA ? ' ahorcado__trazo--horca' : ''}" d="${d}" pathLength="1"/>`
-  ).join('');
-  // la cara aparece con la cabeza: ojos y boca (sonríe; se sorprende si se completa)
-  const cara = `<g class="ahorcado__cara">
-      <circle cx="80" cy="38" r="1.8"/><circle cx="88" cy="38" r="1.8"/>
-      <path class="ahorcado__boca ahorcado__boca--sonrisa" d="M79 44q5 4 10 0"/>
-      <circle class="ahorcado__boca ahorcado__boca--oh" cx="84" cy="45" r="2.4"/>
-    </g>`;
-  return `<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${trazos}${cara}</svg>`;
+  return `<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0 140V128q60-12 120 0v12z" fill="${PALETA.verde}" opacity=".35"/>
+    <path class="ahorcado__cuerda" d="${cuerda(0)}"/>
+    <path d="M50 130q0-8 10-8t10 8z" fill="#9a8f84"/>
+    <g class="ahorcado__globo">
+      <g class="ahorcado__bamboleo">
+        <path d="M60 12c18 0 32 14 32 34 0 22-18 40-32 46-14-6-32-24-32-46 0-20 14-34 32-34z" fill="${PALETA.terracota}"/>
+        <ellipse cx="47" cy="32" rx="6" ry="10" fill="${PALETA.papel}" opacity=".45" transform="rotate(-24 47 32)"/>
+        <path d="M55 97l5-6 5 6z" fill="${PALETA.terracota}"/>
+        <g class="ahorcado__cara">
+          <circle cx="52" cy="48" r="2.6"/><circle cx="68" cy="48" r="2.6"/>
+          <path class="ahorcado__boca ahorcado__boca--sonrisa" d="M52 57q8 7 16 0"/>
+          <path class="ahorcado__boca ahorcado__boca--seria" d="M53 59h14"/>
+          <ellipse class="ahorcado__boca ahorcado__boca--oh" cx="60" cy="60" rx="3.6" ry="4.4"/>
+        </g>
+      </g>
+      <g class="ahorcado__soplo">
+        <circle cx="70" cy="100" r="3"/><circle cx="78" cy="104" r="2.2"/><circle cx="84" cy="98" r="1.6"/>
+      </g>
+    </g>
+  </svg>`;
 }
 
 /* ------------------------------------------------------------------ juego */
@@ -161,7 +169,7 @@ export function iniciar(ctx) {
 
   /**
    * Monta la pantalla de adivinar. Llama a `alAcabar(acertada)` cuando se
-   * resuelve la palabra o se completa el dibujo.
+   * resuelve la palabra o el globo se queda sin aire.
    */
   function adivinar({ palabra, pista, dibujo, maxFallos, marcador, alAcabar }) {
     limpiar(area);
@@ -170,11 +178,13 @@ export function iniciar(ctx) {
     const usadas = new Set();
     let fallos = 0;
     let acabada = false;
-    const previas = maxFallos < TRAZOS.length ? TRAZOS.length - maxFallos : 0;
 
     const lamina = el('div', { clase: 'ahorcado__dibujo', html: dibujoSVG() });
-    const trazos = [...lamina.querySelectorAll('.ahorcado__trazo')];
-    trazos.slice(0, previas).forEach((t) => t.classList.add('ahorcado__trazo--fijo'));
+    const hilo = lamina.querySelector('.ahorcado__cuerda');
+    const aire = (p) => {
+      lamina.style.setProperty('--p', String(p));
+      hilo.setAttribute('d', cuerda(p));
+    };
 
     const pistaNodo = el('div', { clase: 'ahorcado__pista' }, [
       dibujo ? el('span', { clase: 'ahorcado__pista-dibujo', html: objetoSVG(dibujo, PALETA.terracota) }) : null,
@@ -216,9 +226,13 @@ export function iniciar(ctx) {
         tecla.classList.add('ahorcado__tecla--no');
         sonido.fallo();
         marcar(tecla, false);
-        trazos[previas + fallos]?.classList.add('ahorcado__trazo--visible');
         fallos++;
-        if (previas + fallos > 4) lamina.classList.add('ahorcado__dibujo--cara');
+        aire(fallos / maxFallos);
+        // el soplido y el bamboleo se reinician en cada fallo
+        lamina.classList.remove('ahorcado__dibujo--pierde');
+        void lamina.offsetWidth;
+        lamina.classList.add('ahorcado__dibujo--pierde');
+        lamina.classList.toggle('ahorcado__dibujo--preocupado', fallos / maxFallos > 0.5);
         pintarVidas();
         if (fallos >= maxFallos) fin(false);
       }
@@ -262,7 +276,7 @@ export function iniciar(ctx) {
     let aciertos = 0;
     const vistas = [];
     marco.setInstruccion(
-      nivel === 1 ? 'Toca letras para descubrir la palabra del dibujo.' : 'Descubre la palabra antes de que se complete el dibujo.'
+      nivel === 1 ? 'Toca letras para descubrir la palabra del dibujo.' : 'Descubre la palabra antes de que el globo se quede sin aire.'
     );
 
     function siguiente() {

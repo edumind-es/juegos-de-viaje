@@ -215,10 +215,11 @@ export const arteJuego = {
   ahorcado: () =>
     svg(
       fondo('#f6ecdf') +
-        // horca y muñeco a la izquierda, letras a la derecha, todo en la banda central
-        `<path d="M10 74h30M18 74V22h24v8" stroke="#8a5a34" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-         <circle cx="42" cy="37" r="7" fill="none" stroke="${PALETA.tinta}" stroke-width="3.5"/>
-         <path d="M42 44v16M42 49l-7 7M42 49l7 7" stroke="${PALETA.tinta}" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+        // globo a la izquierda, letras a la derecha, todo en la banda central
+        `<g transform="translate(6 10) scale(.8)"><path d="M30 20c10 0 17 8 17 18 0 12-9 21-17 24-8-3-17-12-17-24 0-10 7-18 17-18z" fill="${PALETA.terracota}"/>
+         <ellipse cx="23" cy="31" rx="3" ry="5.5" fill="${PALETA.papel}" opacity=".5" transform="rotate(-24 23 31)"/>
+         <path d="M27 66l3-4 3 4z" fill="${PALETA.terracota}"/>
+         <path d="M30 66c-3 4 3 7 0 12" stroke="${PALETA.tinta}" stroke-width="1.6" fill="none" stroke-linecap="round"/></g>
          <rect x="56" y="36" width="16" height="20" rx="4" fill="${PALETA.teal}"/>
          <rect x="76" y="36" width="16" height="20" rx="4" fill="${PALETA.mostaza}"/>
          <path d="M60 51l4-11 4 11M61.5 47h5" stroke="${PALETA.papel}" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
