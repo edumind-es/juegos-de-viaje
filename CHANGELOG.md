@@ -3,6 +3,17 @@
 Formato libre, una entrada por versión publicada. La versión es la de `VERSION` en
 `service-worker.js`, que es lo que hace que las tablets recojan la actualización.
 
+## v1.6.0 — 2026-10-30
+
+### Juego nuevo: Ahorcado
+- Modo **Yo solo**: tres palabras seguidas. Nivel 1 con dibujo de pista y 10 fallos;
+  nivel 2 con categoría de pista (animales, de viaje, países, naturaleza, comida) y 7 fallos.
+- Modo **Uno contra uno** con los dos perfiles: por turnos, una persona escribe una palabra
+  secreta (oculta con puntos, o «Palabra sorpresa») y pasa la tablet; la otra la adivina.
+  Dos palabras para cada una. Los fallos y las mayúsculas se adaptan a quien tiene la tablet.
+- Teclado en pantalla A–Z con Ñ; la A destapa también la Á. Se puede jugar con teclado físico.
+- Medalla nueva «Palabrera» (10 partidas). «Curiosa» pide ahora haber probado los 10 juegos.
+
 ## v1.5.0 — 2026-09-26
 
 Corrección tras la evaluación VCER del 2026-09-25.

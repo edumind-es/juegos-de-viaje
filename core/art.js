@@ -135,6 +135,7 @@ export function medalla(clave, color = PALETA.mostaza) {
     pincel: `<path d="M34 70l6-22 20-20 10 10-20 20z" fill="${PALETA.papel}"/>`,
     cerebro: `<circle cx="40" cy="46" r="12" fill="${PALETA.papel}"/><circle cx="58" cy="42" r="10" fill="${PALETA.papel}"/><circle cx="52" cy="62" r="11" fill="${PALETA.papel}"/>`,
     rayo: `<path d="M56 24L34 56h14l-6 22 24-34H52z" fill="${PALETA.papel}"/>`,
+    letra: `<path d="M36 72l14-40 14 40M41 59h18" stroke="${PALETA.papel}" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`,
     corazon: `<path d="M50 74S28 60 28 46c0-8 6-13 12-13 5 0 8 3 10 6 2-3 5-6 10-6 6 0 12 5 12 13 0 14-22 28-22 28z" fill="${PALETA.papel}"/>`,
   };
   return svg(`
@@ -209,6 +210,19 @@ export const arteJuego = {
         `<rect x="10" y="18" width="34" height="46" rx="8" fill="${PALETA.azul}" transform="rotate(-8 27 41)"/>
          <rect x="52" y="30" width="34" height="46" rx="8" fill="${PALETA.teal}" transform="rotate(9 69 53)"/>
          <circle cx="69" cy="53" r="9" fill="${PALETA.mostaza}"/>`,
+      'preserveAspectRatio="xMidYMid slice"'
+    ),
+  ahorcado: () =>
+    svg(
+      fondo('#f6ecdf') +
+        // horca y muñeco a la izquierda, letras a la derecha, todo en la banda central
+        `<path d="M10 74h30M18 74V22h24v8" stroke="#8a5a34" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+         <circle cx="42" cy="37" r="7" fill="none" stroke="${PALETA.tinta}" stroke-width="3.5"/>
+         <path d="M42 44v16M42 49l-7 7M42 49l7 7" stroke="${PALETA.tinta}" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+         <rect x="56" y="36" width="16" height="20" rx="4" fill="${PALETA.teal}"/>
+         <rect x="76" y="36" width="16" height="20" rx="4" fill="${PALETA.mostaza}"/>
+         <path d="M60 51l4-11 4 11M61.5 47h5" stroke="${PALETA.papel}" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+         <path d="M56 63h16M76 63h16" stroke="${PALETA.terracota}" stroke-width="4" stroke-linecap="round"/>`,
       'preserveAspectRatio="xMidYMid slice"'
     ),
   geografia: () =>

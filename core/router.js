@@ -74,6 +74,15 @@ export const CATALOGO = [
     },
   },
   {
+    id: 'ahorcado',
+    nombre: 'Ahorcado',
+    arte: arteJuego.ahorcado,
+    instrucciones: {
+      1: 'Toca letras para descubrir la palabra. Solo o con otra persona.',
+      2: 'Adivina la palabra letra a letra. Juega solo o uno contra uno.',
+    },
+  },
+  {
     id: 'geografia',
     nombre: 'Geografía',
     arte: arteJuego.geografia,

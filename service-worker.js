@@ -7,7 +7,7 @@
  * caché nueva, borrará las antiguas y el modo sin conexión seguirá intacto.
  */
 
-const VERSION = 'v1.5.0';
+const VERSION = 'v1.6.0';
 const CACHE = `etg-${VERSION}`;
 
 const ARCHIVOS = [
@@ -53,6 +53,8 @@ const ARCHIVOS = [
 
   './games/agrupamientos/game.js',
   './games/agrupamientos/style.css',
+  './games/ahorcado/game.js',
+  './games/ahorcado/style.css',
   './games/checkin/game.js',
   './games/checkin/style.css',
   './games/colorear/game.js',

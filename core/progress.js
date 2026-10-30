@@ -84,7 +84,8 @@ export const MEDALLAS = [
   { id: 'artista', emblema: 'pincel', color: '#d9634a', nombre: 'Artista', desc: '5 dibujos terminados', test: (p) => (p.porJuego.colorear?.partidas || 0) >= 5 },
   { id: 'exploradora', emblema: 'ojo', color: '#2e7d74', nombre: 'Exploradora', desc: '5 rondas de check-in', test: (p) => (p.porJuego.checkin?.partidas || 0) >= 5 },
   { id: 'geografa', emblema: 'ojo', color: '#6fa8c7', nombre: 'Viajera', desc: '10 rondas de geografía', test: (p) => (p.porJuego.geografia?.partidas || 0) >= 10 },
-  { id: 'todos', emblema: 'corazon', color: '#9b8bc4', nombre: 'Curiosa', desc: 'Has probado todos los juegos', test: (p) => Object.keys(p.porJuego).length >= 9 },
+  { id: 'palabras10', emblema: 'letra', color: '#2e7d74', nombre: 'Palabrera', desc: '10 partidas del ahorcado', test: (p) => (p.porJuego.ahorcado?.partidas || 0) >= 10 },
+  { id: 'todos', emblema: 'corazon', color: '#9b8bc4', nombre: 'Curiosa', desc: 'Has probado todos los juegos', test: (p) => Object.keys(p.porJuego).length >= 10 },
 ];
 
 function revisarMedallas(p) {
