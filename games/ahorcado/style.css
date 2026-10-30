@@ -1,0 +1,399 @@
+/* Juego: Ahorcado */
+
+/* ------------------------------------------------------- menú de modos */
+
+.ahorcado__modos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 280px));
+  justify-content: center;
+  gap: var(--sp-3);
+  width: 100%;
+}
+
+.ahorcado__modo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: var(--sp-3);
+  border-radius: var(--r-lg);
+  background: var(--papel);
+  box-shadow: var(--sombra-1), var(--sombra-2);
+  transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1);
+  animation: ahorcado-in 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.ahorcado__modo:nth-child(2) {
+  animation-delay: 60ms;
+}
+.ahorcado__modo:active {
+  transform: scale(0.95);
+}
+
+.ahorcado__modo-icono {
+  width: 110px;
+  height: 110px;
+  display: block;
+}
+.ahorcado__modo-icono svg {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.ahorcado__modo-nombre {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: var(--t-lg);
+}
+.ahorcado__modo-desc {
+  color: var(--tinta-suave);
+}
+
+@keyframes ahorcado-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.94);
+  }
+}
+
+/* ---------------------------------------------------- mesa de juego */
+
+.ahorcado__mesa {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-4);
+}
+
+.ahorcado__dibujo {
+  flex: 0 1 auto;
+  height: 100%;
+  max-height: 260px;
+  aspect-ratio: 120 / 140;
+  min-height: 110px;
+  padding: var(--sp-2);
+  border-radius: var(--r-lg);
+  background: var(--papel);
+  box-shadow: var(--sombra-1), var(--sombra-2);
+}
+.ahorcado__dibujo svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.ahorcado__dibujo {
+  --p: 0;
+}
+
+.ahorcado__cuerda {
+  fill: none;
+  stroke: var(--tinta-suave);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+/* se encoge alrededor del nudo y baja hacia la piedra a medida que pierde aire */
+.ahorcado__globo {
+  transform-origin: 60px 92px;
+  transform: translateY(calc(var(--p) * 26px)) scale(calc(1 - var(--p) * 0.5));
+  transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ahorcado__bamboleo {
+  transform-origin: 60px 92px;
+  animation: ahorcado-flota 3.2s ease-in-out infinite;
+}
+@keyframes ahorcado-flota {
+  50% {
+    transform: rotate(4deg) translateY(-2px);
+  }
+}
+.ahorcado__dibujo--pierde .ahorcado__bamboleo {
+  animation: ahorcado-sacudida 480ms ease-in-out, ahorcado-flota 3.2s 480ms ease-in-out infinite;
+}
+@keyframes ahorcado-sacudida {
+  25% {
+    transform: rotate(-9deg);
+  }
+  60% {
+    transform: rotate(7deg);
+  }
+}
+
+.ahorcado__soplo {
+  fill: var(--azul);
+  opacity: 0;
+}
+.ahorcado__dibujo--pierde .ahorcado__soplo {
+  animation: ahorcado-soplo 700ms ease-out;
+}
+@keyframes ahorcado-soplo {
+  0% {
+    opacity: 0.9;
+    transform: translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(10px, 4px);
+  }
+}
+
+.ahorcado__cara {
+  fill: var(--tinta);
+}
+.ahorcado__boca--sonrisa,
+.ahorcado__boca--seria {
+  fill: none;
+  stroke: var(--tinta);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+.ahorcado__boca--seria,
+.ahorcado__boca--oh {
+  display: none;
+}
+.ahorcado__dibujo--preocupado .ahorcado__boca--sonrisa {
+  display: none;
+}
+.ahorcado__dibujo--preocupado .ahorcado__boca--seria {
+  display: inline;
+}
+
+/* sin aire: queda arrugado sobre la piedra, con cara de sorpresa */
+.ahorcado__dibujo--completo .ahorcado__globo {
+  transform: translateY(26px) scale(0.55, 0.3);
+}
+.ahorcado__dibujo--completo .ahorcado__bamboleo {
+  animation: none;
+}
+.ahorcado__dibujo--completo .ahorcado__boca--sonrisa,
+.ahorcado__dibujo--completo .ahorcado__boca--seria {
+  display: none;
+}
+.ahorcado__dibujo--completo .ahorcado__boca--oh {
+  display: inline;
+}
+
+/* palabra descubierta: el globo da un salto de alegría */
+.ahorcado__dibujo--salvado {
+  box-shadow: 0 0 0 4px var(--acierto), var(--sombra-2);
+}
+.ahorcado__dibujo--salvado .ahorcado__boca--sonrisa {
+  display: inline;
+}
+.ahorcado__dibujo--salvado .ahorcado__boca--seria {
+  display: none;
+}
+.ahorcado__dibujo--salvado .ahorcado__bamboleo {
+  animation: ahorcado-salto 700ms cubic-bezier(0.22, 1, 0.36, 1) 2;
+}
+@keyframes ahorcado-salto {
+  40% {
+    transform: translateY(-10px) scale(1.06);
+  }
+}
+
+.ahorcado__lado {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.ahorcado__pista {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 6px var(--sp-3) 6px 6px;
+  border-radius: var(--r-full);
+  background: var(--crema-2);
+  font-weight: 600;
+  color: var(--tinta);
+}
+.ahorcado__pista-dibujo {
+  width: 84px;
+  height: 84px;
+  display: block;
+  border-radius: 50%;
+  background: var(--papel);
+  padding: 6px;
+}
+.ahorcado__pista-dibujo svg {
+  width: 100%;
+  height: 100%;
+}
+.ahorcado__pista:not(:has(.ahorcado__pista-dibujo)) {
+  padding: 10px var(--sp-3);
+}
+
+/* ------------------------------------------------------- la palabra */
+
+.ahorcado__palabra {
+  --n: 6;
+  width: 100%;
+  max-width: calc(var(--n) * 64px);
+  display: grid;
+  grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+  gap: clamp(4px, 1vmin, 10px);
+  container-type: inline-size;
+}
+
+.ahorcado__hueco {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 5;
+  border-bottom: 5px solid var(--tinta);
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: min(2.6rem, calc(100cqw / var(--n) * 0.72));
+  line-height: 1;
+  color: var(--teal-osc);
+}
+.ahorcado__hueco--abierto {
+  animation: ahorcado-letra 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ahorcado__hueco--desvelado {
+  color: var(--terracota-osc);
+}
+.ahorcado__hueco--cursor {
+  border-bottom-color: var(--teal);
+  animation: ahorcado-cursor 1s steps(1) infinite;
+}
+@keyframes ahorcado-letra {
+  from {
+    transform: translateY(-10px) scale(0.6);
+    opacity: 0;
+  }
+}
+@keyframes ahorcado-cursor {
+  50% {
+    border-bottom-color: transparent;
+  }
+}
+
+.ahorcado__vidas {
+  font-weight: 600;
+  color: var(--tinta-suave);
+}
+
+/* ------------------------------------------------------- el teclado */
+
+.ahorcado__teclado {
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: 760px;
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  gap: clamp(5px, 1vmin, 10px);
+}
+
+.ahorcado__tecla {
+  min-height: clamp(44px, 7vh, var(--toque));
+  border-radius: var(--r-sm);
+  background: var(--papel);
+  box-shadow: var(--sombra-1), 0 3px 8px rgba(58, 52, 47, 0.08);
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: clamp(1.1rem, 2.6vmin, 1.5rem);
+  color: var(--tinta);
+  transition: transform 120ms, background 200ms, color 200ms;
+}
+.ahorcado__tecla:active {
+  transform: scale(0.92);
+}
+.ahorcado__tecla:disabled {
+  box-shadow: none;
+}
+.ahorcado__tecla--si {
+  background: var(--acierto);
+  color: var(--papel);
+}
+.ahorcado__tecla--no {
+  background: var(--crema-3);
+  color: var(--tinta-suave);
+  text-decoration: line-through;
+}
+
+/* ------------------------------------------- 1 contra 1: escribir y pasar */
+
+.ahorcado__secreta {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+}
+.ahorcado__palabra--escribir {
+  max-width: min(100%, calc(var(--n) * 56px));
+}
+
+.ahorcado__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-2);
+}
+.ahorcado__acciones .btn:disabled {
+  opacity: 0.45;
+}
+
+.ahorcado__pase {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+  animation: ahorcado-in 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.ahorcado__pase-avatar {
+  width: 140px;
+  height: 140px;
+}
+.ahorcado__pase-avatar svg {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+.ahorcado__pase-texto {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: var(--t-xl);
+}
+
+/* en vertical el dibujo va encima de la palabra */
+@media (orientation: portrait) {
+  .ahorcado__mesa {
+    flex-direction: column;
+    gap: var(--sp-2);
+  }
+  .ahorcado__dibujo {
+    height: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: 240px;
+  }
+  .ahorcado__lado {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ahorcado__bamboleo,
+  .ahorcado__dibujo--pierde .ahorcado__bamboleo,
+  .ahorcado__dibujo--salvado .ahorcado__bamboleo {
+    animation: none;
+  }
+  .ahorcado__hueco--cursor {
+    animation: none;
+  }
+}

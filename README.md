@@ -130,6 +130,7 @@ El nivel **no se elige a mano**: lo determina la edad del perfil activo
 | Secuencias | patrones A-B-A-B de formas y colores | series numéricas y patrones A-B-C más largos |
 | Agrupamientos | clasificar por un criterio | dos criterios combinados (forma + color) |
 | Memoria | 8 cartas (4 parejas) | 16 cartas (8 parejas) |
+| Ahorcado (con un globo que se desinfla en vez del muñeco) | 3 palabras con dibujo de pista, 10 fallos | 3 palabras por categoría (animales, viaje, países…), 7 fallos. **Modo uno contra uno:** una persona escribe la palabra secreta (o pide una sorpresa) y la otra la adivina; dos palabras cada una |
 | Geografía | 4 modos: banderas conocidas (3 opciones), continentes, océanos y comunidades | 11 modos: + países del mundo y de Europa, provincias, bandera→lugar, montañas, ríos por continente y mares |
 | Check-in de viaje | panel de 12 cosas que ver | tablero 10×10 con 100 cosas y líneas completas |
 
